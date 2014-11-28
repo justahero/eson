@@ -4,8 +4,6 @@ require 'eson/chainable'
 require 'eson/api'
 require 'eson/dsl'
 
-require 'pry'
-
 describe 'Eson::Api' do
   before do
     M = Module.new do

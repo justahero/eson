@@ -54,11 +54,11 @@ module Eson
     # @param [Hash] params The parameters, keyed by name
     # @raise [NoMethodError]
     def parameters=(params)
-      params.each do |k,v|
+      params.each do |k, v|
         begin
-          self.send("#{k}=", v)
-        rescue NoMethodError => e
-          raise NoMethodError, "Tried to set parameter `#{k}`, but request has no such parameter."
+          self.url.params.send("#{k}=", v)
+        rescue NoMethodError
+          raise NoMethodError, "Tried to set parameter `#{k}`, but request has no such parameter"
         end
       end
     end
