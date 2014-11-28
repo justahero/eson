@@ -4,6 +4,7 @@ basedir = File.dirname(__FILE__)
 
 gem 'rspec', '~> 3.1', :require => false
 gem 'rspec-its', :require => false
+gem 'rack-test', :require => false
 gem 'simplecov', :require => false
 gem 'simplecov-console', :require => false
 gem 'pry', :require => false
