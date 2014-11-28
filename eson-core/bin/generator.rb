@@ -1,6 +1,8 @@
+require 'json'
 require 'fileutils'
 require 'thor'
-require 'eson-core'
+
+require 'eson/transform'
 
 module Helpers
   def setup_dir(output_folder, overwrite)
