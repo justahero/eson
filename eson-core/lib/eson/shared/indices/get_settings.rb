@@ -1,17 +1,31 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-get-settings.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:GetSettings#parameters}
-      # {include:GetSettings#source_param}
-      # {include:GetSettings#multi_index}
-      # {include:GetSettings#multi_types}
       module GetSettings
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :get
+
+        url do
+          set_base_path '/_settings'
+          path '/_settings'
+          path '/{index}/_settings'
+          path '/{index}/_settings/{name}'
+          path '/_settings/{name}'
+
+          part :index, type: String
+          part :name, type: String
+
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], ["open", "closed"]
+            boolean :flat_settings
+            boolean :local
+          end
+        end
       end
     end
   end

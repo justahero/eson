@@ -1,45 +1,24 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-multi-search.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # @note {include:MultiSearch#parameters}
-      # @note {include:MultiSearch#source_param}
-      # @note {include:MultiSearch#multi_index}
-      # @note {include:MultiSearch#multi_types}
-      module MultiSearch
-        extend API
+      module Msearch
+        include Eson::API::DSL
 
-        attr_accessor :type
+        request_methods :get, :post
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/_msearch'
+          path '/_msearch'
+          path '/{index}/_msearch'
+          path '/{index}/{type}/_msearch'
 
-        # @!macro source_param
-        source_param :msearch
-        # @!macro parameters
-        parameters :msearch,
-                   :types
+          part :index, type: String
+          part :type, type: String
 
-        def msearch
-          @msearch ||= []
-        end
-
-        def <<(request)
-          msearch << request
-        end
-
-        def search(args, immediate = true, &block)
-          self << client.search(args, false, &block)
-        end
-
-        def types
-          if @types
-            Array(@types)
-          elsif type
-            Array(type)
-          else
-            []
+          params do
+            enum :search_type, ["query_then_fetch", "query_and_fetch", "dfs_query_then_fetch", "dfs_query_and_fetch", "count", "scan"], nil
           end
         end
       end

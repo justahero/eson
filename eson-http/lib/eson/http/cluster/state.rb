@@ -2,16 +2,7 @@ module Eson
   module HTTP
     module Cluster
       module State
-        include Shared::Cluster::State
-        extend API
-        #TODO implement filter_indices correctly
-
-        request_method :get
-
-        def path
-          '/_cluster/state'
-        end
-
+        include Eson::Shared::Cluster::State
       end
     end
   end

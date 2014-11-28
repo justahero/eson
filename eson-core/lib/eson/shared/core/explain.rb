@@ -1,45 +1,39 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-explain.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:Explain#parameters}
-      # {include:Explain#source_param}
-      # {include:Explain#multi_index}
-      # {include:Explain#multi_types}
       module Explain
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index false
+        request_methods :get, :post
 
-        # @!macro multi_types
-        multi_types false
+        url do
+          set_base_path '/{index}/{type}/{id}/_explain'
+          path '/{index}/{type}/{id}/_explain'
 
+          part :id, type: String, required: true
+          part :index, type: String, required: true
+          part :type, type: String, required: true
 
-        # @!macro source_param
-        source_param :query,
-                     :fields,
-                     :facets,
-                     :filter
-
-        # @!macro parameters
-        parameters :id,
-                   :type,
-                   :query,
-                   :routing,
-                   :parent,
-                   :preference,
-                   :q,
-                   :df,
-                   :analyzer,
-                   :analyze_wildcard,
-                   :lowercase_expanded_terms,
-                   :lenient,
-                   :default_operator,
-                   :fields,
-                   :facets,
-                   :filter
+          params do
+            boolean :analyze_wildcard
+            string :analyzer
+            enum :default_operator, ["AND", "OR"], "OR"
+            string :df
+            list :fields
+            boolean :lenient
+            boolean :lowercase_expanded_terms
+            string :parent
+            string :preference
+            string :q
+            string :routing
+            string :source
+            list :_source
+            list :_source_exclude
+            list :_source_include
+          end
+        end
       end
     end
   end

@@ -1,17 +1,24 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-templates.html
+
 module Eson
   module Shared
-      module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:DeleteTemplate#parameters}
-      # {include:DeleteTemplate#source_param}
-      # {include:DeleteTemplate#multi_index}
-      # {include:DeleteTemplate#multi_types}
+    module Indices
       module DeleteTemplate
-        extend API
+        include Eson::API::DSL
 
-        # @!macro parameters
-        parameters :name
+        request_methods :delete
+
+        url do
+          set_base_path '/_template/{name}'
+          path '/_template/{name}'
+
+          part :name, type: String, required: true
+
+          params do
+            time :timeout
+            time :master_timeout
+          end
+        end
       end
     end
   end

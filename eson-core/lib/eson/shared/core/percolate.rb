@@ -1,28 +1,37 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-percolate.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # @note {include:Percolate#parameters}
-      # @note {include:Percolate#source_param}
-      # @note {include:Percolate#multi_index}
-      # @note {include:Percolate#multi_types}
       module Percolate
-        extend API
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :get, :post
 
-        # @!macro parameters
-        parameters :query,
-                   :doc,
-                   :prefer_local,
-                   :type,
-                   :index
+        url do
+          set_base_path '/{index}/{type}/_percolate'
+          path '/{index}/{type}/_percolate'
+          path '/{index}/{type}/{id}/_percolate'
 
-        # @!macro source_param
-        source_param :doc, :query
+          part :index, type: String, required: true
+          part :type, type: String, required: true
+          part :id, type: String, required: false
 
+          params do
+            list :routing
+            string :preference
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            string :percolate_index
+            string :percolate_type
+            string :percolate_routing
+            string :percolate_preference
+            enum :percolate_format, ["ids"], nil
+            number :version
+            enum :version_type, ["internal", "external", "external_gte", "force"], nil
+          end
+        end
       end
     end
   end

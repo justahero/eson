@@ -1,24 +1,31 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cluster-health.html
+
 module Eson
   module Shared
     module Cluster
-      # Requests using this API have the following properties:
-      #
-      # {include:Health#parameters}
-      # {include:Health#source_param}
-      # {include:Health#multi_index}
-      # {include:Health#multi_types}
       module Health
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :get
 
-        # @!macro parameters
-        parameters :wait_for_status,
-                   :level,
-                   :wait_for_relocating_shards,
-                   :wait_for_nodes,
-                   :timeout
+        url do
+          set_base_path '/_cluster/health'
+          path '/_cluster/health'
+          path '/_cluster/health/{index}'
+
+          part :index, type: String
+
+          params do
+            enum :level, ["cluster", "indices", "shards"], "cluster"
+            boolean :local
+            time :master_timeout
+            time :timeout
+            number :wait_for_active_shards
+            string :wait_for_nodes
+            number :wait_for_relocating_shards
+            enum :wait_for_status, ["green", "yellow", "red"], nil
+          end
+        end
       end
     end
   end

@@ -1,58 +1,34 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/docs-delete-by-query.html
+
 module Eson
   module Shared
     module Core
-
-      # Requests using this API have the following properties:
-      #
-      # @note {include:DeleteByQuery#parameters}
-      # @note {include:DeleteByQuery#source_param}
-      # @note {include:DeleteByQuery#multi_index}
-      # @note {include:DeleteByQuery#multi_types}
       module DeleteByQuery
-        extend API
+        include Eson::API::DSL
 
-        attr_accessor :type
+        request_methods :delete
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/{index}/_query'
+          path '/{index}/_query'
+          path '/{index}/{type}/_query'
 
-        # @!macro source_param
-        source_param :query
+          part :index, type: String, required: true
+          part :type, type: String
 
-        # TODO: check the parameter list
-        # @!macro parameters
-        parameters :timeout,
-                   :types,
-                   :routing,
-                   :query,
-                   :from,
-                   :size,
-                   :search_type,
-                   :sort,
-                   :track_scores,
-                   :highlight,
-                   :fields,
-                   :script_fields,
-                   :preference,
-                   :facets,
-                   :filter,
-                   :scroll,
-                   :scroll_id,
-                   :indices_boost,
-                   :explain,
-                   :version,
-                   :min_score,
-                   :q,
-                   :df,
-                   :analyzer
-
-        def types
-          if @types
-            Array(@types)
-          elsif type
-            Array(type)
-          else
-            []
+          params do
+            string :analyzer
+            enum :consistency, ["one", "quorum", "all"], nil
+            enum :default_operator, ["AND", "OR"], "OR"
+            string :df
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            enum :replication, ["sync", "async"], "sync"
+            string :q
+            string :routing
+            string :source
+            time :timeout
           end
         end
       end

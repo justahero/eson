@@ -1,20 +1,28 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-delete-mapping.html
+
 module Eson
   module Shared
-      module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:DeleteMapping#parameters}
-      # {include:DeleteMapping#source_param}
-      # {include:DeleteMapping#multi_index}
-      # {include:DeleteMapping#multi_types}
+    module Indices
       module DeleteMapping
-        extend API
+        include Eson::API::DSL
 
-        # @!macro parameters
-        parameters :type
+        request_methods :delete
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/{index}/{type}/_mapping'
+          path '/{index}/{type}/_mapping'
+          path '/{index}/{type}'
+          path '/{index}/_mapping/{type}'
+          path '/{index}/{type}/_mappings'
+          path '/{index}/_mappings/{type}'
+
+          part :index, type: String, required: true
+          part :type, type: String, required: true
+
+          params do
+            time :master_timeout
+          end
+        end
       end
     end
   end

@@ -1,44 +1,35 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/docs-index_.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:Index#parameters}
-      # {include:Index#source_param}
-      # {include:Index#multi_index}
-      # {include:Index#multi_types}
       module Index
-        extend API
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :post, :put
 
-        # @!macro source_param
-        source_param :doc
+        url do
+          set_base_path '/{index}/{type}'
+          path '/{index}/{type}'
+          path '/{index}/{type}/{id}'
 
-        # @!macro parameters
-        parameters(
-          :type,
-          :id,
-          :doc,
-          :version,
-          :op_type,
-          :routing,
-          :parent,
-          :percolate,
-          :replication,
-          :consistency,
-          :refresh,
-          :timeout,
-          :ttl,
-          :timestamp
-        )
+          part :id, type: String
+          part :index, type: String, required: true
+          part :type, type: String, required: true
 
-        alias :document :doc
-
-        def item=(item)
-          warn("item= is deprecated and replaced by doc=")
-          self.doc = item
+          params do
+            enum :consistency, ["one", "quorum", "all"], nil
+            enum :op_type, ["index", "create"], "index"
+            string :parent
+            boolean :refresh
+            enum :replication, ["sync", "async"], "sync"
+            string :routing
+            time :timeout
+            time :timestamp
+            duration :ttl
+            number :version
+            enum :version_type, ["internal", "external", "external_gte", "force"], nil
+          end
         end
       end
     end

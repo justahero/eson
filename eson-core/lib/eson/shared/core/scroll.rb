@@ -1,18 +1,25 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-request-scroll.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:Scroll#parameters}
-      # {include:Scroll#source_param}
-      # {include:Scroll#multi_index}
-      # {include:Scroll#multi_types}
       module Scroll
-        extend API
+        include Eson::API::DSL
 
-        # @!macro parameters
-        parameters :scroll_id,
-                   :scroll
+        request_methods :get, :post
+
+        url do
+          set_base_path '/_search/scroll'
+          path '/_search/scroll'
+          path '/_search/scroll/{scroll_id}'
+
+          part :scroll_id, type: String
+
+          params do
+            duration :scroll
+            string :scroll_id
+          end
+        end
       end
     end
   end

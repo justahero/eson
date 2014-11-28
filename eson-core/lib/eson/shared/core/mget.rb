@@ -1,26 +1,32 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/docs-multi-get.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:MultiGet#parameters}
-      # {include:MultiGet#source_param}
-      # {include:MultiGet#multi_index}
-      # {include:MultiGet#multi_types}
-      module MultiGet
-        extend API
+      module Mget
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :get, :post
 
-        # @!macro source_param
-        source_param :docs,
-                     :ids
+        url do
+          set_base_path '/_mget'
+          path '/_mget'
+          path '/{index}/_mget'
+          path '/{index}/{type}/_mget'
 
-        # @!macro parameters
-        parameters :type,
-                   :docs,
-                   :ids
+          part :index, type: String
+          part :type, type: String
+
+          params do
+            list :fields
+            string :preference
+            boolean :realtime
+            boolean :refresh
+            list :_source
+            list :_source_exclude
+            list :_source_include
+          end
+        end
       end
     end
   end

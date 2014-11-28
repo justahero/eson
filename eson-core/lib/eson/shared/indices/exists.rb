@@ -1,17 +1,26 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-exists.html
+
 module Eson
   module Shared
-      module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:IndexExists#parameters}
-      # {include:IndexExists#source_param}
-      # {include:IndexExists#multi_index}
-      # {include:IndexExists#multi_types}
-      module IndexExists
-        extend API
+    module Indices
+      module Exists
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :head
+
+        url do
+          set_base_path '/{index}'
+          path '/{index}'
+
+          part :index, type: String, required: true
+
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            boolean :local
+          end
+        end
       end
     end
   end

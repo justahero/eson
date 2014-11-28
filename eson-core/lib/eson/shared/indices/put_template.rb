@@ -1,19 +1,27 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-templates.html
+
 module Eson
   module Shared
-      module Indices
-      # Requests using this API have the following properties:
-      #
-      # @note {include:PutTemplate#parameters}
-      # @note {include:PutTemplate#source_param}
-      # @note {include:PutTemplate#multi_index}
-      # @note {include:PutTemplate#multi_types}
+    module Indices
       module PutTemplate
-        extend API
+        include Eson::API::DSL
 
-        # @!macro parameters
-        parameters :template, :settings, :mappings, :name
-        # @!macro source_param
-        source_param :template, :settings, :mappings
+        request_methods :put, :post
+
+        url do
+          set_base_path '/_template/{name}'
+          path '/_template/{name}'
+
+          part :name, type: String, required: true
+
+          params do
+            number :order
+            boolean :create
+            time :timeout
+            time :master_timeout
+            boolean :flat_settings
+          end
+        end
       end
     end
   end

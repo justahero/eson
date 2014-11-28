@@ -1,25 +1,34 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-put-mapping.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:PutMapping#parameters}
-      # {include:PutMapping#source_param}
-      # {include:PutMapping#multi_index}
-      # {include:PutMapping#multi_types}
       module PutMapping
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :put, :post
 
-        # @!macro parameters
-        parameters :type,
-                   :ignore_conflicts,
-                   :mapping
+        url do
+          set_base_path '/{index}/{type}/_mapping'
+          path '/{index}/{type}/_mapping'
+          path '/{index}/_mapping/{type}'
+          path '/_mapping/{type}'
+          path '/{index}/{type}/_mappings'
+          path '/{index}/_mappings/{type}'
+          path '/_mappings/{type}'
 
-        # @!macro source_param
-        source_param :mapping
+          part :index, type: String
+          part :type, type: String, required: true
+
+          params do
+            boolean :ignore_conflicts
+            time :timeout
+            time :master_timeout
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+          end
+        end
       end
     end
   end

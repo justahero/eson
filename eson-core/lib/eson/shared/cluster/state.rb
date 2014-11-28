@@ -1,25 +1,28 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cluster-state.html
+
 module Eson
   module Shared
     module Cluster
-      # Requests using this API have the following properties:
-      #
-      # {include:State#parameters}
-      # {include:State#source_param}
-      # {include:State#multi_index}
-      # {include:State#multi_types}
       module State
-        extend API
-        #TODO implement filter_indices correctly
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :get
 
-        # @!macro parameters
-        parameters :filter_nodes,
-                   :filter_routing_table,
-                   :filter_metadata,
-                   :filter_blocks,
-                   :filter_indices
+        url do
+          set_base_path '/_cluster/state'
+          path '/_cluster/state'
+          path '/_cluster/state/{metric}'
+          path '/_cluster/state/{metric}/{index}'
+
+          part :index, type: String
+          part :metric, type: String
+
+          params do
+            boolean :local
+            time :master_timeout
+            boolean :flat_settings
+          end
+        end
       end
     end
   end

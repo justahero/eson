@@ -1,25 +1,28 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-refresh.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # @note {include:Refresh#parameters}
-      # @note {include:Refresh#source_param}
-      # @note {include:Refresh#multi_index}
-      # @note {include:Refresh#multi_types}
       module Refresh
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :post, :get
 
-        # @!macro parameters
-        parameters :max_num_segments,
-                   :only_expunge_deletes,
-                   :refresh,
-                   :flush,
-                   :wait_for_merge
+        url do
+          set_base_path '/_refresh'
+          path '/_refresh'
+          path '/{index}/_refresh'
 
+          part :index, type: String
+
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            boolean :force
+            string :operation_threading
+          end
+        end
       end
     end
   end

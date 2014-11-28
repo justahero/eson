@@ -2,16 +2,7 @@ module Eson
   module HTTP
     module Core
       module Percolate
-        include Shared::Core::Percolate
-        extend API
-
-        def path
-          '/{index}/{type}/_percolate'
-        end
-
-        def request_method
-          :post
-        end
+        include Eson::Shared::Core::Percolate
       end
     end
   end

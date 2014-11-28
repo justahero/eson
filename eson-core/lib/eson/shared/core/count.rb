@@ -1,71 +1,30 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-count.html
+
 module Eson
   module Shared
     module Core
-
-      # Requests using this API have the following properties:
-      #
-      # @note {include:Count#parameters}
-      # @note {include:Count#source_param}
-      # @note {include:Count#multi_index}
-      # @note {include:Count#multi_types}
       module Count
-        extend API
+        include Eson::API::DSL
 
-        attr_accessor :type
+        request_methods :post, :get
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/_count'
+          path '/_count'
+          path '/{index}/_count'
+          path '/{index}/{type}/_count'
 
-        # @!macro source_param
-        source_param :query,
-                     :timeout,
-                     :from,
-                     :size,
-                     :sort,
-                     :track_scores,
-                     :highlight,
-                     :fields,
-                     :script_fields,
-                     :facets,
-                     :filter,
-                     :indices_boost,
-                     :explain,
-                     :version,
-                     :min_score
+          part :index, type: String
+          part :type, type: String
 
-        # @!macro parameters
-        parameters :timeout,
-                   :types,
-                   :routing,
-                   :query,
-                   :from,
-                   :size,
-                   :search_type,
-                   :sort,
-                   :track_scores,
-                   :highlight,
-                   :fields,
-                   :script_fields,
-                   :preference,
-                   :facets,
-                   :filter,
-                   :scroll,
-                   :scroll_id,
-                   :indices_boost,
-                   :explain,
-                   :version,
-                   :min_score,
-                   :q,
-                   :df,
-                   :analyzer
-
-        def types
-          if @types
-            Array(@types)
-          elsif type
-            Array(type)
-          else
-            []
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            number :min_score
+            string :preference
+            string :routing
+            string :source
           end
         end
       end

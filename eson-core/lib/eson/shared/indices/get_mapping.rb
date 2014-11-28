@@ -1,24 +1,29 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-get-mapping.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:GetMapping#parameters}
-      # {include:GetMapping#source_param}
-      # {include:GetMapping#multi_index}
-      # {include:GetMapping#multi_types}
       module GetMapping
-        extend API
+        include Eson::API::DSL
 
-          attr_accessor :type
-        # @!macro parameters
-        parameters :types
+        request_methods :get
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/_mapping'
+          path '/_mapping'
+          path '/{index}/_mapping'
+          path '/_mapping/{type}'
+          path '/{index}/_mapping/{type}'
 
-        def types
-          @types || Array(@type)
+          part :index, type: String
+          part :type, type: String
+
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            list :expand_wildcards
+            boolean :local
+          end
         end
       end
     end

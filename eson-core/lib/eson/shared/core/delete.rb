@@ -1,36 +1,32 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/docs-delete.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:Delete#parameters}
-      # {include:Delete#source_param}
-      # {include:Delete#multi_index}
-      # {include:Delete#multi_types}
       module Delete
-        extend API
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :delete
 
-        # @!macro source_param
-        source_param :item
+        url do
+          set_base_path '/{index}/{type}/{id}'
+          path '/{index}/{type}/{id}'
 
-        # @!macro parameters
-        parameters(
-          :type,
-          :id,
-          :item,
-          :version,
-          :op_type,
-          :routing,
-          :parent,
-          :percolate,
-          :replication,
-          :consistency,
-          :refresh,
-          :timeout
-        )
+          part :id, type: String, required: true
+          part :index, type: String, required: true
+          part :type, type: String, required: true
+
+          params do
+            enum :consistency, ["one", "quorum", "all"], nil
+            string :parent
+            boolean :refresh
+            enum :replication, ["sync", "async"], "sync"
+            string :routing
+            time :timeout
+            number :version
+            enum :version_type, ["internal", "external", "external_gte", "force"], nil
+          end
+        end
       end
     end
   end

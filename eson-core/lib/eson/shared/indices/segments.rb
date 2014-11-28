@@ -1,16 +1,28 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-segments.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:Segments#parameters}
-      # {include:Segments#source_param}
-      # {include:Segments#multi_index}
-      # {include:Segments#multi_types}
       module Segments
-        extend API
-        # @!macro multi_index
-        multi_index true
+        include Eson::API::DSL
+
+        request_methods :get
+
+        url do
+          set_base_path '/_segments'
+          path '/_segments'
+          path '/{index}/_segments'
+
+          part :index, type: String
+
+          params do
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            boolean :human
+            string :operation_threading
+          end
+        end
       end
     end
   end

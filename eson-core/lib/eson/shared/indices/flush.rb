@@ -1,20 +1,29 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-flush.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:Flush#parameters}
-      # {include:Flush#source_param}
-      # {include:Flush#multi_index}
-      # {include:Flush#multi_types}
       module Flush
-        extend API
+        include Eson::API::DSL
 
-        # @!macro parameters
-        parameters :refresh
+        request_methods :post, :get
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/_flush'
+          path '/_flush'
+          path '/{index}/_flush'
+
+          part :index, type: String
+
+          params do
+            boolean :force
+            boolean :full
+            boolean :wait_if_ongoing
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+          end
+        end
       end
     end
   end

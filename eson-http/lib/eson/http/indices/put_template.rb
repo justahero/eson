@@ -2,14 +2,7 @@ module Eson
   module HTTP
     module Indices
       module PutTemplate
-        include Shared::Indices::PutTemplate
-        extend API
-
-        request_method :put
-
-        def path
-          "/_template/{name}"
-        end
+        include Eson::Shared::Indices::PutTemplate
       end
     end
   end

@@ -1,17 +1,28 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-aliases.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:GetAliases#parameters}
-      # {include:GetAliases#source_param}
-      # {include:GetAliases#multi_index}
-      # {include:GetAliases#multi_types}
       module GetAliases
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :get
+
+        url do
+          set_base_path '/_aliases'
+          path '/_aliases'
+          path '/{index}/_aliases'
+          path '/{index}/_aliases/{name}'
+          path '/_aliases/{name}'
+
+          part :index, type: String
+          part :name, type: String
+
+          params do
+            time :timeout
+            boolean :local
+          end
+        end
       end
     end
   end

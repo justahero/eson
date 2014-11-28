@@ -1,23 +1,24 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/cluster-stats.html
+
 module Eson
   module Shared
     module Cluster
-      # Requests using this API have the following properties:
-      #
-      # {include:Stats#parameters}
-      # {include:Stats#source_param}
-      # {include:Stats#multi_index}
-      # {include:Stats#multi_types}
       module Stats
-        extend API
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :get
 
-        # @!macro parameters
-        parameters :nodes
+        url do
+          set_base_path '/_cluster/stats'
+          path '/_cluster/stats'
+          path '/_cluster/stats/nodes/{node_id}'
 
-        def nodes
-          Array(@nodes)
+          part :node_id, type: String
+
+          params do
+            boolean :flat_settings
+            boolean :human
+          end
         end
       end
     end

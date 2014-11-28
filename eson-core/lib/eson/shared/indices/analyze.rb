@@ -1,19 +1,32 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-analyze.html
+
 module Eson
   module Shared
     module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:Analyze#parameters}
-      # {include:Analyze#source_param}
-      # {include:Analyze#multi_index}
-      # {include:Analyze#multi_types}
       module Analyze
-        extend API
+        include Eson::API::DSL
 
-        # @!macro no_multi_index
-        multi_index false
+        request_methods :get, :post
 
-        attr_accessor :text, :analyzer, :format, :tokenizer, :field
+        url do
+          set_base_path '/_analyze'
+          path '/_analyze'
+          path '/{index}/_analyze'
+
+          part :index, type: String
+
+          params do
+            string :analyzer
+            list :char_filters
+            string :field
+            list :filters
+            string :index
+            boolean :prefer_local
+            string :text
+            string :tokenizer
+            enum :format, ["detailed", "text"], "detailed"
+          end
+        end
       end
     end
   end

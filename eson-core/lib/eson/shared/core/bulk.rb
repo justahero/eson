@@ -1,35 +1,30 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/docs-bulk.html
+
 module Eson
   module Shared
     module Core
-
-      # Requests using this API have the following properties:
-      #
-      # {include:Bulk#parameters}
-      # {include:Bulk#source_param}
-      # {include:Bulk#multi_index}
-      # {include:Bulk#multi_types}
       module Bulk
-        extend API
+        include Eson::API::DSL
 
-        # @!macro source_param
-        source_param :bulk
-        # @!macro parameters
-        parameters :bulk
+        request_methods :post, :put
 
-        def bulk
-          @bulk ||= []
-        end
+        url do
+          set_base_path '/_bulk'
+          path '/_bulk'
+          path '/{index}/_bulk'
+          path '/{index}/{type}/_bulk'
 
-        def <<(request)
-          bulk << request
-        end
+          part :index, type: String
+          part :type, type: String
 
-        def index(args, immediate = nil)
-          self << client.index(args, false)
-        end
-
-        def delete(args, immediate = nil)
-          self << client.delete(args, false)
+          params do
+            enum :consistency, ["one", "quorum", "all"], nil
+            boolean :refresh
+            enum :replication, ["sync", "async"], "sync"
+            string :routing
+            time :timeout
+            string :type
+          end
         end
       end
     end

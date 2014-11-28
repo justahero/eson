@@ -1,22 +1,37 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/indices-clearcache.html
+
 module Eson
   module Shared
-      module Indices
-      # Requests using this API have the following properties:
-      #
-      # {include:ClearCache#parameters}
-      # {include:ClearCache#source_param}
-      # {include:ClearCache#multi_index}
-      # {include:ClearCache#multi_types}
+    module Indices
       module ClearCache
-        extend API
+        include Eson::API::DSL
 
-        # @!macro multi_index
-        multi_index true
+        request_methods :post, :get
 
-        # @!macro parameters
-        parameters :filter,
-                   :field_data,
-                   :bloom
+        url do
+          set_base_path '/_cache/clear'
+          path '/_cache/clear'
+          path '/{index}/_cache/clear'
+
+          part :index, type: String
+
+          params do
+            boolean :field_data
+            boolean :fielddata
+            list :fields
+            boolean :filter
+            boolean :filter_cache
+            boolean :filter_keys
+            boolean :id
+            boolean :id_cache
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            list :index
+            boolean :recycler
+            boolean :query_cache
+          end
+        end
       end
     end
   end

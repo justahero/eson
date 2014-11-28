@@ -1,75 +1,55 @@
+# See documentation http://www.elasticsearch.org/guide/en/elasticsearch/reference/master/search-search.html
+
 module Eson
   module Shared
     module Core
-      # Requests using this API have the following properties:
-      #
-      # {include:Search#parameters}
-      # {include:Search#source_param}
-      # {include:Search#multi_index}
-      # {include:Search#multi_types}
       module Search
-        extend API
+        include Eson::API::DSL
 
-        attr_accessor :type
+        request_methods :get, :post
 
-        # @!macro multi_index
-        multi_index true
+        url do
+          set_base_path '/_search'
+          path '/_search'
+          path '/{index}/_search'
+          path '/{index}/{type}/_search'
 
-        # @!macro multi_types
-        multi_types true
+          part :index, type: String
+          part :type, type: String
 
-        # @!macro source_param
-        source_param :query,
-                     :timeout,
-                     :from,
-                     :size,
-                     :sort,
-                     :track_scores,
-                     :highlight,
-                     :fields,
-                     :script_fields,
-                     :facets,
-                     :filter,
-                     :indices_boost,
-                     :explain,
-                     :version,
-                     :min_score,
-                     :suggest
-
-        # @!macro parameters
-        parameters :timeout,
-                   :types,
-                   :routing,
-                   :query,
-                   :from,
-                   :size,
-                   :search_type,
-                   :sort,
-                   :track_scores,
-                   :highlight,
-                   :fields,
-                   :script_fields,
-                   :preference,
-                   :facets,
-                   :filter,
-                   :scroll,
-                   :indices_boost,
-                   :explain,
-                   :version,
-                   :min_score,
-                   :q,
-                   :df,
-                   :analyzer,
-                   :lowercase_expanded_terms,
-                   :suggest
-
-        def types
-          if @types
-            Array(@types)
-          elsif type
-            Array(type)
-          else
-            []
+          params do
+            string :analyzer
+            boolean :analyze_wildcard
+            enum :default_operator, ["AND", "OR"], "OR"
+            string :df
+            boolean :explain
+            list :fields
+            number :from
+            boolean :ignore_unavailable
+            boolean :allow_no_indices
+            enum :expand_wildcards, ["open", "closed"], "open"
+            boolean :lenient
+            boolean :lowercase_expanded_terms
+            string :preference
+            string :q
+            list :routing
+            duration :scroll
+            enum :search_type, ["query_then_fetch", "query_and_fetch", "dfs_query_then_fetch", "dfs_query_and_fetch", "count", "scan"], nil
+            number :size
+            list :sort
+            string :source
+            list :_source
+            list :_source_exclude
+            list :_source_include
+            list :stats
+            string :suggest_field
+            enum :suggest_mode, ["missing", "popular", "always"], "missing"
+            number :suggest_size
+            text :suggest_text
+            time :timeout
+            boolean :track_scores
+            boolean :version
+            boolean :query_cache
           end
         end
       end
