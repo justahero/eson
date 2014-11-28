@@ -5,9 +5,10 @@ require 'eson/api'
 require 'eson/dsl/part_builder'
 
 describe Eson::API::DSL::PartBuilder do
+  subject { Eson::API::DSL::PartBuilder.new }
+
   describe '#add_part' do
     context 'with type String' do
-      subject { Eson::API::DSL::PartBuilder.new }
       before do
         subject.add_part(:index, type: String, required: true)
       end
@@ -37,8 +38,6 @@ describe Eson::API::DSL::PartBuilder do
   end
 
   describe '#required' do
-    subject { Eson::API::DSL::PartBuilder.new }
-
     it 'returns empty list without parts' do
       expect(subject.required).to eq []
     end
@@ -55,8 +54,6 @@ describe Eson::API::DSL::PartBuilder do
   end
 
   describe '#multi_index?' do
-    subject { Eson::API::DSL::PartBuilder.new }
-
     it 'returns false with type String as index part' do
       subject.add_part(:index, type: String)
       expect(subject.multi_index?).to eq false
