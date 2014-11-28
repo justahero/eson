@@ -16,7 +16,7 @@ module Eson
             include Virtus.module
           end
           @mod.instance_eval do
-            attribute name, type, default: ''
+            attribute name, type
           end
           extend @mod
 
@@ -27,6 +27,10 @@ module Eson
           names = (@attribute_set || []).map(&:name)
           required = @required_parts.select { |k, v| v }
           required.keys.select { |k| names.include?(k) }
+        end
+
+        def is_set?(name)
+          respond_to?(name.to_sym) && !send(name.to_sym).nil?
         end
 
         def multi_index?

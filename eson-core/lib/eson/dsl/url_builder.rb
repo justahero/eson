@@ -1,3 +1,4 @@
+require 'addressable/template'
 require 'eson/dsl/param_builder'
 require 'eson/dsl/part_builder'
 
@@ -14,6 +15,7 @@ module Eson
         def initialize(&block)
           @params = ParamBuilder.new
           @parts  = PartBuilder.new
+          @paths  = []
           instance_eval(&block) if block_given?
         end
 
@@ -21,13 +23,28 @@ module Eson
           @base_path = path
         end
 
+        def find_path
+          paths.sort_by(&:size).reverse.each do |path|
+            template = Addressable::Template.new(path)
+            keys = template.keys.map(&:to_sym)
+
+            expansions = {}
+            keys.each do |k|
+              expansions[k] = parts.send(k) if parts.is_set?(k)
+            end
+
+            if expansions.size == keys.size
+              return template.expand(expansions).path
+            end
+          end
+          base_path
+        end
+
         def path(path)
-          @paths ||= []
           @paths << path
         end
 
         def part(path, args = {})
-          # parse to its own object, add validation?
           @parts.add_part(path, args)
           @parts
         end

@@ -6,8 +6,6 @@ require 'eson/api'
 require 'eson/dsl'
 require 'eson/dsl/url_builder'
 
-require 'pry'
-
 describe Eson::API::DSL::UrlBuilder do
   describe '#paths' do
     let(:builder) do
@@ -85,6 +83,73 @@ describe Eson::API::DSL::UrlBuilder do
       subject { builder.parts }
 
       it { is_expected.to respond_to(:index) }
+    end
+
+    context 'without required parts' do
+      let(:builder) do
+        Eson::API::DSL::UrlBuilder.new do
+          path '/test/{foo}/'
+          part :foo, type: String
+        end
+      end
+      subject { builder.parts }
+
+      it 'can return list of required parts only' do
+        expect(subject.required).to eq []
+      end
+    end
+
+    context 'with multiple parts' do
+      let(:builder) do
+        Eson::API::DSL::UrlBuilder.new do
+          path '/test/{foo}/{bar}'
+          part :foo, type: String, required: true
+          part :bar, type: String
+        end
+      end
+      subject { builder.parts }
+
+      it 'can return required parts with single element' do
+        expect(subject.required).to eq [:foo]
+      end
+    end
+  end
+
+  describe '#find_path' do
+    subject { builder.find_path }
+    let(:builder) do
+      Eson::API::DSL::UrlBuilder.new do
+        path '/test/'
+        path '/test/{index}/'
+        path '/test/{type}/'
+        path '/test/{index}/{type}/'
+
+        part :index, type: String
+        part :type, type: String
+      end
+    end
+
+    context 'without any given parts' do
+      it { is_expected.to eq '/test/' }
+    end
+
+    context 'with part :index' do
+      before { builder.parts.index = 'foo' }
+      it { is_expected.to eq '/test/foo/' }
+    end
+
+    context 'with path :type' do
+      before { builder.parts.type = 'bar' }
+      it { is_expected.to eq '/test/bar/' }
+    end
+
+    context 'with all parts' do
+      before do
+        builder.parts.index = 'foo'
+        builder.parts.type  = 'bar'
+      end
+
+      it { is_expected.to eq '/test/foo/bar/' }
     end
   end
 end
