@@ -147,6 +147,14 @@ module Eson
     # @!macro request
     # @!macro immediate
     #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Core::AbortBenchmark}.
+    def abort_benchmark(args = {}, immediate = auto_call)
+      request(protocol::Core::AbortBenchmark, args, immediate)
+    end
+
+    # @!macro request
+    # @!macro immediate
+    #
     # {include:Index#parameters}
     # {include:Index#source_param}
     # {include:Index#multi_index}
