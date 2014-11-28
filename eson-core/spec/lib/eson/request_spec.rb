@@ -59,4 +59,20 @@ describe Eson::Request do
       expect{ subject.parameters = { foo: ['1', '2'] } }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#parts' do
+    before do
+      M.class_eval do
+        url do
+          path '/_base/{foo}/{bar}'
+          part :foo, type: String, required: true
+          part :bar, type: String
+        end
+      end
+    end
+
+    it 'does not raise error' do
+      expect { subject.parts }.to_not raise_error
+    end
+  end
 end

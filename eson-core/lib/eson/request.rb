@@ -41,7 +41,7 @@ module Eson
     def set_parameters_without_exceptions(params)
       params.each do |k,v|
         begin
-          self.send("#{k}=", v)
+          self.url.params.send("#{k}=", v)
         rescue NoMethodError => e
           #drop
         end
@@ -61,6 +61,10 @@ module Eson
           raise NoMethodError, "Tried to set parameter `#{k}`, but request has no such parameter"
         end
       end
+    end
+
+    def parts
+      self.url.parts
     end
 
     # Checks whether a Plugin works with a certain type of request. For example,

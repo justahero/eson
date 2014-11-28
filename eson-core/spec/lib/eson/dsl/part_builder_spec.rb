@@ -36,6 +36,24 @@ describe Eson::API::DSL::PartBuilder do
     end
   end
 
+  describe '#required' do
+    subject { Eson::API::DSL::PartBuilder.new }
+
+    it 'returns empty list without parts' do
+      expect(subject.required).to eq []
+    end
+
+    it 'returns empty list with non required parts' do
+      subject.add_part(:foo, type: String)
+      expect(subject.required).to eq []
+    end
+
+    it 'returns correct list with required parts' do
+      subject.add_part('foo', type: String, required: true)
+      expect(subject.required).to eq [:foo]
+    end
+  end
+
   describe '#multi_index?' do
     subject { Eson::API::DSL::PartBuilder.new }
 
