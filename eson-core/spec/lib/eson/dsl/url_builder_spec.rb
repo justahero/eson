@@ -152,4 +152,24 @@ describe Eson::API::DSL::UrlBuilder do
       it { is_expected.to eq '/test/foo/bar/' }
     end
   end
+
+  describe '#query_values' do
+    subject { builder.query_values }
+    let(:builder) do
+      Eson::API::DSL::UrlBuilder.new do
+        params do
+          enum :foo, ['1', '2'], '1'
+          string :bar, 'test'
+        end
+      end
+    end
+
+    it 'does not raise error' do
+      expect { subject }.to_not raise_error
+    end
+
+    it 'returns valid query string' do
+      expect(subject).to eq({ foo: '1', bar: 'test' })
+    end
+  end
 end

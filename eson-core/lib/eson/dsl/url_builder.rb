@@ -40,6 +40,10 @@ module Eson
           base_path
         end
 
+        def query_values
+          params.attributes
+        end
+
         def path(path)
           @paths << path
         end

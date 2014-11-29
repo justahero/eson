@@ -70,24 +70,8 @@ module Eson
       # @api internal
       # @return [String] the full uri
       def fill
-        template = Addressable::Template.new(path)
-
-        template_keys = template.keys.map(&:to_sym)
-        expansions = {}
-        query_values = {}
-
-        url_params.each do |p|
-          val = self.send(p)
-
-          if template_keys.include? p
-            expansions[p] = val if val
-          else
-            query_values[p] = val if val
-          end
-        end
-
-        uri = template.expand(expansions)
-        uri.query_values = query_values unless query_values.empty?
+        uri = Addressable::URI.new(url.find_path)
+        uri.query_values = url.query_values
         uri
       end
 
