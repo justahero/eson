@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'rspec/its'
 
-require 'eson/chainable'
-require 'eson/api'
 require 'eson/dsl'
 require 'eson/dsl/url_builder'
 

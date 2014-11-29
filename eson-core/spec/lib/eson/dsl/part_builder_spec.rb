@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'eson/chainable'
-require 'eson/api'
 require 'eson/dsl/part_builder'
 
 describe Eson::API::DSL::PartBuilder do

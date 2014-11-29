@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'lib/eson/chainable'
-require 'lib/eson/api'
 require 'lib/eson/transform/generator'
 
 describe Eson::Transform::Generator do
