@@ -160,6 +160,14 @@ module Eson
       request(protocol::Cluster::Health, args, immediate)
     end
 
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Cluster::PendingTasks}.
+    def pending_tasks(args = {}, immediate = auto_call)
+      request(protocol::Cluster::PendingTasks, args, immediate)
+    end
+
     # @!endgroup
 
     # @!group Core Requests
