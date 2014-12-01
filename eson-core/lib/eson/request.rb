@@ -63,6 +63,16 @@ module Eson
       end
     end
 
+    def parts=(parts)
+      parts.each do |k, v|
+        begin
+          self.url.parts.send("#{k}=", v)
+        rescue NoMethodError
+          raise NoMethodError, "Tried to set part `#{k}`, but path does not have such a part"
+        end
+      end
+    end
+
     def parts
       self.url.parts
     end

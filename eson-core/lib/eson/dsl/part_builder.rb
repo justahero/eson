@@ -24,8 +24,12 @@ module Eson
           @required_parts[name] = args.fetch(:required) { false }
         end
 
+        def names
+          (@attribute_set || []).map(&:name)
+        end
+
         def required
-          names = (@attribute_set || []).map(&:name)
+          names = self.names
           required = @required_parts.select { |k, v| v }
           required.keys.select { |k| names.include?(k) }
         end

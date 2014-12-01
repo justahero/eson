@@ -767,8 +767,13 @@ module Eson
       def request(endpoint, args, auto_call = auto_call)
         r = protocol::Request.new(endpoint, plugins, self)
 
+        # split args into URL path parts and query_parameters
+        parts_keys = r.parts.names
+        query_args = args.group_by { |k,v| parts_keys.include?(k) }
+
         r.set_parameters_without_exceptions(default_parameters)
-        r.parameters = args
+        r.parameters = Hash[query_args[false] || []]
+        r.parts      = Hash[query_args[true]  || []]
 
         if block_given?
           r.handle_block(&Proc.new)
