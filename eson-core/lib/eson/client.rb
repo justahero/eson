@@ -168,6 +168,14 @@ module Eson
       request(protocol::Cluster::PendingTasks, args, immediate)
     end
 
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Cluster::PutSettings}.
+    def cluster_put_settings(args = {}, immediate = auto_call)
+      request(protocol::Cluster::PutSettings, args, immediate)
+    end
+
     # @!endgroup
 
     # @!group Core Requests
