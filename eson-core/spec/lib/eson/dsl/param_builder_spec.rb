@@ -19,6 +19,8 @@ describe Eson::API::DSL::ParamBuilder do
       expect { subject.send("#{name.to_sym}=", default) }.to_not raise_error
       expect(subject.send(name.to_sym)).to eq default
     end
+
+    it { is_expected.to respond_to(:attributes) }
   end
 
   describe '#initialize' do
@@ -28,6 +30,8 @@ describe Eson::API::DSL::ParamBuilder do
       it 'does not raise error' do
         expect { subject }.to_not raise_error
       end
+
+      it { is_expected.to respond_to(:attributes) }
     end
 
     context 'with empty block' do
@@ -36,6 +40,8 @@ describe Eson::API::DSL::ParamBuilder do
       it 'does not raise error' do
         expect { subject }.to_not raise_error
       end
+
+      it { is_expected.to respond_to(:attributes) }
     end
 
     describe 'add enum parameter' do

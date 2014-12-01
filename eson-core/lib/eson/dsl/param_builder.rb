@@ -5,6 +5,7 @@ module Eson
     module DSL
       class ParamBuilder
         def initialize(&block)
+          @mod = create_module
           instance_eval(&block) if block_given?
         end
 
@@ -47,15 +48,16 @@ module Eson
 
         private
 
+        def create_module
+          m = Module.new do
+            include Virtus.module
+          end
+          self.extend m
+        end
+
         def add_attribute(name, type, default = nil, coercer = nil)
           args = {}
           args[:coercer] = coercer if coercer
-          @mod ||= begin
-                     m = Module.new do
-                       include Virtus.module
-                     end
-                     self.extend m
-                   end
           @mod.instance_eval do
             attribute name.to_sym, type, args
           end
