@@ -157,7 +157,7 @@ describe Eson::API::DSL::UrlBuilder do
       Eson::API::DSL::UrlBuilder.new do
         params do
           enum :foo, ['1', '2'], '1'
-          string :bar, 'test'
+          string :bar
         end
       end
     end
@@ -167,7 +167,12 @@ describe Eson::API::DSL::UrlBuilder do
     end
 
     it 'returns valid query string' do
-      expect(subject).to eq({ foo: '1', bar: 'test' })
+      expect(subject).to eq({ foo: '1' })
+    end
+
+    it 'returns list with full values after setting all parameters' do
+      builder.params.bar = 'test'
+      expect(subject).to eq({ foo: '1', bar: 'test'})
     end
   end
 end

@@ -144,8 +144,20 @@ module Eson
 
     # @!group Cluster Requests
 
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Cluster::GetSettings}.
     def cluster_get_settings(args = {}, immediate = auto_call)
       request(protocol::Cluster::GetSettings, args, immediate)
+    end
+
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Cluster::Health}.
+    def cluster_health(args = {}, immediate = auto_call)
+      request(protocol::Cluster::Health, args, immediate)
     end
 
     # @!endgroup

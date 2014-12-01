@@ -41,7 +41,7 @@ module Eson
         end
 
         def query_values
-          params.attributes
+          params.attributes.reject { |k,v| v.nil? }
         end
 
         def path(path)

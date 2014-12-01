@@ -71,22 +71,9 @@ module Eson
       # @return [String] the full uri
       def fill
         uri = Addressable::Template.new(url.find_path).expand({})
-        uri.query_values = url.query_values unless url.query_values.empty?
+        query_values = url.query_values
+        uri.query_values = query_values unless query_values.empty?
         uri
-      end
-
-      # The parameters that are passed in the url. These are all params
-      # without the source params.
-      #
-      # @return [Array] the url parameters
-      def url_params
-        if self.respond_to? :source_param
-          source_params = Array(source_param)
-        else
-          source_params = []
-        end
-
-        (parameters - source_params)
       end
 
       # Returns the request method. If none is given, it is assumed to be
