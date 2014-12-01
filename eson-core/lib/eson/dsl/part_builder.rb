@@ -12,14 +12,15 @@ module Eson
           name = path.to_sym
           type = args.fetch(:type)
 
-          @mod ||= Module.new do
-            include Virtus.module
-          end
+          @mod ||= begin
+                     m = Module.new do
+                       include Virtus.module
+                     end
+                     self.extend m
+                   end
           @mod.instance_eval do
             attribute name, type
           end
-          extend @mod
-
           @required_parts[name] = args.fetch(:required) { false }
         end
 
