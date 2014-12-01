@@ -175,4 +175,25 @@ describe Eson::API::DSL::UrlBuilder do
       expect(subject).to eq({ foo: '1', bar: 'test'})
     end
   end
+
+  describe '#source_values' do
+    subject { builder.source_values }
+    let(:builder) do
+      Eson::API::DSL::UrlBuilder.new do
+        params do
+          string :foo, 'test'
+          string :bar, 'no'
+        end
+        source_param :foo
+      end
+    end
+
+    it 'does not raise error' do
+      expect { subject }.to_not raise_error
+    end
+
+    it 'returns list with correct values' do
+      expect(subject).to eq({ foo: 'test' })
+    end
+  end
 end

@@ -16,6 +16,7 @@ module Eson
           @params = ParamBuilder.new
           @parts  = PartBuilder.new
           @paths  = []
+          @source_params = []
           instance_eval(&block) if block_given?
         end
 
@@ -41,7 +42,11 @@ module Eson
         end
 
         def query_values
-          params.attributes.reject { |k,v| v.nil? }
+          params.attributes.reject { |k,v| v.nil? || source_params.include?(k) }
+        end
+
+        def source_values
+          params.attributes.select { |k,v| !v.nil? && source_params.include?(k) }
         end
 
         def path(path)
@@ -59,7 +64,6 @@ module Eson
         end
 
         def source_param(*params)
-          @source_params ||= []
           params.each do |param|
             @source_params << param
           end
