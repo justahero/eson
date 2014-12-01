@@ -43,7 +43,7 @@ module Eson
         end
 
         def time(name, default = nil)
-          add_attribute name, DateTime, default
+          add_attribute name, String, default
         end
 
         private

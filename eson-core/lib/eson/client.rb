@@ -142,6 +142,14 @@ module Eson
       end
     end
 
+    # @!group Cluster Requests
+
+    def cluster_get_settings(args = {}, immediate = auto_call)
+      request(protocol::Cluster::GetSettings, args, immediate)
+    end
+
+    # @!endgroup
+
     # @!group Core Requests
 
     # @!macro request

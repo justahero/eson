@@ -103,7 +103,7 @@ describe Eson::API::DSL::ParamBuilder do
         end
       end
 
-      it_behaves_like 'a valid parameter', :created_at, DateTime.new(2014, 10, 12)
+      it_behaves_like 'a valid parameter', :created_at, DateTime.new(2014, 10, 12).to_s
     end
 
     describe 'add list parameter' do
