@@ -14,7 +14,6 @@ require 'eson-core'
 require 'eson-http'
 
 RSpec.configure do |c|
-  c.include Rack::Test::Methods
   c.include Eson::Support::Spec::JSON
 
   c.before(:each) do
@@ -27,7 +26,7 @@ end
 
 def es_client
   node = Node::External.instance
-  @client ||= Eson::Client.new(:server => "http://#{node.ip}:#{node.port}")
+  @client ||= Eson::Client.new(:server => "http://#{node.ip}:#{node.port}", logger: '/dev/null')
 end
 
 def delete_all_indexes
