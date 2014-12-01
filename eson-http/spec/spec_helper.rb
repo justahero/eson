@@ -33,3 +33,12 @@ def delete_all_indexes
   es_client.delete_index index: '_all'
 rescue
 end
+
+def put_request(path, body = {})
+  node = Node::External.instance
+  http = Net::HTTP.new(node.ip, node.port)
+  request = Net::HTTP::Put.new(path)
+  request.body = body.to_json unless body.empty?
+  request.content_type = 'application/json'
+  http.request(request)
+end

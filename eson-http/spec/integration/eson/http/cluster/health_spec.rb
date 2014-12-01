@@ -11,7 +11,7 @@ describe 'Eson::HTTP::Cluster::Health' do
 
   context '/_cluster/health/{index}' do
     before do
-      es_client.create_index :index => 'test'
+      put_request '/test/'
     end
 
     subject(:response) { es_client.cluster_health :index => 'test' }
