@@ -56,6 +56,7 @@ describe Eson::Request do
     end
 
     it 'raises ArgumentError when parameter type is different' do
+      pending 'currently coercion is deactivated'
       expect{ subject.parameters = { foo: ['1', '2'] } }.to raise_error(ArgumentError)
     end
   end
