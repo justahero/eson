@@ -126,26 +126,9 @@ module Eson
     #
     # @return [String] the request source, as String
     def source_from_params
-      return nil unless self.respond_to? :source_param
-
-      if Symbol === source_param
-        obj = self.send source_param
-        if (String === obj || obj.nil?)
-          return obj
-        else
-          return encode(obj)
-        end
-      else
-        obj = {}
-        source_param.each_with_object(obj) do |p, o|
-          if v = self.send(p)
-            o[p] = v
-          end
-        end
-
-        return nil if obj.empty?
-        return encode(obj)
-      end
+      params = self.url.source_values
+      return nil if params.empty?
+      encode(params)
     end
 
     # Encode any object. If it is an {Eson}-Object and responds to 

@@ -81,7 +81,10 @@ module Eson
       #
       # @return [Symbol] The request method.
       def request_method
-        @request_method || :get
+        if self.respond_to?(:request_methods)
+          return self.request_methods.first
+        end
+        :get
       end
     end
   end

@@ -63,9 +63,12 @@ module Eson
           @params
         end
 
-        def source_param(*params)
-          params.each do |param|
-            @source_params << param
+        def source_param(*list)
+          list.each do |param|
+            @source_params << param.to_sym
+            unless @params.respond_to?(param)
+              @params.string(param)
+            end
           end
         end
       end

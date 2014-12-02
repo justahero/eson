@@ -75,5 +75,52 @@ describe Eson::Request do
     it 'does not raise error' do
       expect { subject.parts }.to_not raise_error
     end
+
+    it 'returns list of parts names' do
+      expect(subject.parts.names).to eq([:foo, :bar])
+    end
+  end
+
+  describe '#source' do
+    context 'with explicitly set parameter' do
+      before do
+        M.class_eval do
+          url do
+            params do
+              string :name, 'test'
+            end
+            source_param :name, :foo
+          end
+        end
+      end
+
+      it 'does not raise error' do
+        expect { subject.source }.to_not raise_error
+      end
+
+      it 'sets source parameter' do
+        subject.parameters = { name: 'haha' }
+        expect(subject.source).to eq({ "name" => "haha" }.to_json)
+      end
+    end
+
+    context 'with implicitly set parameter' do
+      before do
+        M.class_eval do
+          url do
+            source_param :foo
+          end
+        end
+      end
+
+      it 'does not raise error' do
+        expect { subject.source }.to_not raise_error
+      end
+
+      it 'sets source parameter' do
+        subject.parameters = { foo: 'test' }
+        expect(subject.source).to eq({ :foo => 'test' }.to_json)
+      end
+    end
   end
 end
