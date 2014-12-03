@@ -6,6 +6,6 @@ describe 'Eson::HTTP::Core::AbortBenchmark' do
   context 'without a benchmark' do
     subject(:response) { es_client.abort_benchmark name: 'foo' }
 
-    it_behaves_like 'a valid API response', 404
+    it_behaves_like 'a valid API response', 400
   end
 end

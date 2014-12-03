@@ -6,13 +6,7 @@ describe 'Eson::HTTP::Cluster::PutSettings' do
   let(:params) { {} }
   subject(:response) { es_client.cluster_put_settings params }
 
-  context 'without body parameters' do
-    it_behaves_like 'a valid API response', 400
-
-    it { is_expected.to match_json_schema('cluster/put_settings') }
-  end
-
-  context 'with body arguments' do
+  context 'with source argument' do
     before do
       params[:timeout] = 200
       params[:master_timeout] = 500
