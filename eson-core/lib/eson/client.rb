@@ -488,6 +488,15 @@ module Eson
       request(protocol::Indices::Create, args, immediate)
     end
 
+
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Indices::Delete}.
+    def delete_index(args = {}, immediate = auto_call)
+      request(protocol::Indices::Delete, args, immediate)
+    end
+
     # @!macro request
     # @!macro immediate
     #
@@ -566,19 +575,6 @@ module Eson
     # @param [Hash] args The arguments, as given in {Eson::Shared::OpenIndex}.
     def open_index(args = {}, immediate = auto_call)
       request(protocol::Indices::OpenIndex, args, immediate)
-    end
-
-    # @!macro request
-    # @!macro immediate
-    #
-    # {include:DeleteIndex#parameters}
-    # {include:DeleteIndex#source_param}
-    # {include:DeleteIndex#multi_index}
-    # {include:DeleteIndex#multi_types}
-    #
-    # @param [Hash] args The arguments, as given in {Eson::Shared::DeleteIndex}.
-    def delete_index(args = {}, immediate = auto_call)
-      request(protocol::Indices::Delete, args, immediate)
     end
 
     # @!macro request
