@@ -176,6 +176,14 @@ module Eson
       request(protocol::Cluster::PutSettings, args, immediate)
     end
 
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Cluster::Reroute}.
+    def reroute(args = {}, immediate = auto_call)
+      request(protocol::Cluster::Reroute, args, immediate)
+    end
+
     # @!endgroup
 
     # @!group Core Requests
@@ -488,7 +496,6 @@ module Eson
       request(protocol::Indices::Create, args, immediate)
     end
 
-
     # @!macro request
     # @!macro immediate
     #
@@ -679,6 +686,14 @@ module Eson
     # @param [Hash] args The arguments, as given in {Eson::Shared::UpdateSettings}.
     def update_settings(args = {}, immediate = auto_call)
       request(protocol::Indices::UpdateSettings, args, immediate)
+    end
+
+    # @!macro request
+    # @!macro immediate
+    #
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Indices::Recovery}.
+    def recovery(args = {}, immediate = auto_call)
+      request(protocol::Indices::Recovery, args, immediate)
     end
 
     # @!macro request
