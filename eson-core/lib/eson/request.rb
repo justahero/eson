@@ -10,9 +10,6 @@ module Eson
   class Request
     attr_accessor :api, :client
 
-    attr_accessor :pretty, :source, :index, :indices, :case
-
-    
     def initialize(api, plugins, client)
       self.api = api
       self.client = client
@@ -100,32 +97,10 @@ module Eson
       @index || client.index_name
     end
 
-    def parameters
-      if self.respond_to?(:multi_index) && (multi_index == true)
-        [:pretty, :indices, :case]
-      elsif self.respond_to?(:multi_index) && (multi_index == false)
-        [:pretty, :index, :case]
-      else
-        [:pretty, :case]
-      end
-    end
-
-    def indices
-      if @indices
-        Array(@indices)
-      else
-        Array(self.index)
-      end
-    end
-
-    def source
-      @source || source_from_params
-    end
-
     # Extracts the source parameters from the parameter set.
     #
     # @return [String] the request source, as String
-    def source_from_params
+    def source
       params = self.url.source_values
       return nil if params.empty?
       encode(params)
