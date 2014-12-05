@@ -1,8 +1,6 @@
 require 'spec_helper'
 require 'elasticsearch-node/external'
 
-require 'pry'
-
 describe 'Eson::HTTP::Cluster::Reroute', api: :cluster do
   let(:params) { {} }
   subject(:response) { es_client.reroute params }

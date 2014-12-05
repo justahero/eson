@@ -197,14 +197,24 @@ module Eson
     end
 
     # @!macro request
+    #
+    # If this method is called with a block, the request is immediately called.
+    # With no block given, the request will be returned.
+    #
+    # @yield The block is evaluated to create the subrequests.
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Core::Bulk}.
+    def bulk(args = {}, &block)
+      if block_given?
+        request(protocol::Core::Bulk, args, &block)
+      else
+        request(protocol::Core::Bulk, args, false)
+      end
+    end
+
+    # @!macro request
     # @!macro immediate
     #
-    # {include:Index#parameters}
-    # {include:Index#source_param}
-    # {include:Index#multi_index}
-    # {include:Index#multi_types}
-    #
-    # @param [Hash] args The arguments, as given in {Eson::Shared::Index}.
+    # @param [Hash] args The arguments, as given in {Eson::Shared::Core::Index}.
     def index(args = {}, immediate = auto_call)
       request(protocol::Core::Index, args, immediate)
     end
@@ -321,26 +331,6 @@ module Eson
     # @param [Hash] args The arguments, as given in {Eson::Shared::Percolate}.
     def percolate(args = {}, immediate = auto_call, &block)
       request(protocol::Core::Percolate, args, immediate, &block)
-    end
-
-    # @!macro request
-    #
-    # {include:Bulk#parameters}
-    # {include:Bulk#source_param}
-    # {include:Bulk#multi_index}
-    # {include:Bulk#multi_types}
-    #
-    # If this method is called with a block, the request is immediately called.
-    # With no block given, the request will be returned.
-    #
-    # @yield The block is evaluated to create the subrequests.
-    # @param [Hash] args The arguments, as given in {Eson::Shared::Bulk}.
-    def bulk(args = {}, &block)
-      if block_given?
-        request(protocol::Core::Bulk, args, &block)
-      else
-        request(protocol::Core::Bulk, args, false)
-      end
     end
 
     # @!macro request

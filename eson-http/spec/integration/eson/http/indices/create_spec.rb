@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'pry'
-
 describe 'Eson::HTTP::Indices::Create' do
   let(:params) { { index: 'test' } }
   subject(:response) { es_client.create_index params }
