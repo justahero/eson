@@ -16,20 +16,43 @@ describe 'Eson::HTTP::Core::Bulk' do
 
   context 'with block' do
     describe 'indexing documents' do
-      let(:total) { 10 }
+      let(:total) { 2 }
       subject(:response) do
         es_client.bulk(refresh: true) do |request|
           1.upto(total) do |i|
-            request.index index: 'test', type: 'bar', doc: { 'foo' => i }, ttl: 10
+            request.index index: 'test', type: 'bar', id: "#{i}", doc: { 'foo' => i }
           end
         end
       end
 
       it_behaves_like 'a valid API response'
 
-      it 'creates correct number of documents' do
+      it 'returns correct number of documents' do
         subject
         expect(count).to eq total
+      end
+    end
+
+    describe 'deleting documents' do
+      let(:total) { 2 }
+      before do
+        es_client.bulk(refresh: true) do |request|
+          1.upto(total) do |i|
+            request.index index: 'test', type: 'bar', id: "#{i}", doc: { 'foo' => 1 }
+          end
+        end
+      end
+      subject(:response) do
+        1.upto(total - 1) do |i|
+          request.delete index: 'test', type: 'bar', id: "#{i}"
+        end
+      end
+
+      it_behaves_like 'a valid API response'
+
+      it 'returns correct number of documents' do
+        subject
+        expect(count).to eq(total - 1)
       end
     end
   end

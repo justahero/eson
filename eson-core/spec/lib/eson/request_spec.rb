@@ -18,6 +18,38 @@ describe Eson::Request do
     Object.send(:remove_const, :M)
   end
 
+  describe 'creating two requests' do
+    let(:request1) { Eson::Request.new(M, [], client) }
+    let(:request2) { Eson::Request.new(M, [], client) }
+
+    before do
+      M.class_eval do
+        url do
+          set_base_path '/{index}'
+          part :index, type: String, required: true
+
+          params do
+            string :foo
+          end
+          source_param :foo
+        end
+      end
+      request1.url.params.foo = 'haha'
+      request2.url.params.foo = 'hoho'
+    end
+
+    it 'returns different parameter values' do
+      expect(request1.url.params.foo).to eq('haha')
+      expect(request2.url.params.foo).to eq('hoho')
+    end
+
+    describe 'comparing requests' do
+      it 'creates different url objects' do
+        expect(request1.url.object_id).to_not eq(request1.url.object_id)
+      end
+    end
+  end
+
   describe '#initialize' do
     context 'with valid arguments' do
       before do
