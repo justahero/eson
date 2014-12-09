@@ -7,10 +7,10 @@ require 'eson/dsl/url_builder'
 describe Eson::API::DSL::UrlBuilder do
   describe '#paths' do
     let(:builder) do
-      Eson::API::DSL::UrlBuilder.new do
-        path '/_cluster/health'
-        path '/_cluster/health/{index}'
-      end
+      args = {
+        :paths => ['/_cluster/health', '/_cluster/health/{index}']
+      }
+      Eson::API::DSL::UrlBuilder.new(args)
     end
     subject { builder.paths }
 
@@ -26,11 +26,10 @@ describe Eson::API::DSL::UrlBuilder do
   describe '#params' do
     context 'with single block' do
       let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          params do
-            string :foo
-          end
-        end
+        args = {
+          :params => { foo: { type: 'string' } }
+        }
+        Eson::API::DSL::UrlBuilder.new(args)
       end
       subject { builder.params }
 
@@ -39,29 +38,13 @@ describe Eson::API::DSL::UrlBuilder do
 
     context 'with single block and two parameters' do
       let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          params do
-            string :foo
-            string :bar
-          end
-        end
-      end
-      subject { builder.params }
-
-      it { is_expected.to respond_to(:foo) }
-      it { is_expected.to respond_to(:bar) }
-    end
-
-    context 'with multiple blocks and parameters' do
-      let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          params do
-            string :foo
-          end
-          params do
-            string :bar
-          end
-        end
+        args = {
+          :params => {
+            foo: { type: 'string' },
+            bar: { type: 'string' }
+          }
+        }
+        Eson::API::DSL::UrlBuilder.new(args)
       end
       subject { builder.params }
 
@@ -73,10 +56,13 @@ describe Eson::API::DSL::UrlBuilder do
   describe '#part' do
     context 'with a single index' do
       let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          path '/_cluster/health/{index}'
-          part :index, type: String, required: true
-        end
+        args = {
+          :paths => ['/_cluster/health/{index}'],
+          :parts => {
+            index: { type: String, required: true }
+          }
+        }
+        Eson::API::DSL::UrlBuilder.new(args)
       end
       subject { builder.parts }
 
@@ -85,10 +71,13 @@ describe Eson::API::DSL::UrlBuilder do
 
     context 'without required parts' do
       let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          path '/test/{foo}/'
-          part :foo, type: String
-        end
+        args = {
+          :paths => ['/test/{foo}/'],
+          :parts => {
+            foo: { type: String }
+          }
+        }
+        Eson::API::DSL::UrlBuilder.new(args)
       end
       subject { builder.parts }
 
@@ -99,11 +88,14 @@ describe Eson::API::DSL::UrlBuilder do
 
     context 'with multiple parts' do
       let(:builder) do
-        Eson::API::DSL::UrlBuilder.new do
-          path '/test/{foo}/{bar}'
-          part :foo, type: String, required: true
-          part :bar, type: String
-        end
+        args = {
+          :paths => ['/test/{foo}/{bar}'],
+          :parts => {
+            foo: { type: String, required: true },
+            bar: { type: String }
+          }
+        }
+        Eson::API::DSL::UrlBuilder.new(args)
       end
       subject { builder.parts }
 
@@ -116,15 +108,13 @@ describe Eson::API::DSL::UrlBuilder do
   describe '#find_path' do
     subject { builder.find_path }
     let(:builder) do
-      Eson::API::DSL::UrlBuilder.new do
-        path '/test/'
-        path '/test/{index}/'
-        path '/test/{type}/'
-        path '/test/{index}/{type}/'
-
-        part :index, type: String
-        part :type, type: String
-      end
+      args = {
+        paths: ['/test/', '/test/{index}/', '/test/{type}/', '/test/{index}/{type}/'],
+        parts: {
+          index: { type: String }, type: { type: String }
+        }
+      }
+      Eson::API::DSL::UrlBuilder.new(args)
     end
 
     context 'without any given parts' do
@@ -154,12 +144,13 @@ describe Eson::API::DSL::UrlBuilder do
   describe '#query_values' do
     subject { builder.query_values }
     let(:builder) do
-      Eson::API::DSL::UrlBuilder.new do
-        params do
-          enum :foo, ['1', '2'], '1'
-          string :bar
-        end
-      end
+      args = {
+        params: {
+          foo: { type: 'enum', values: ['1', '2'], default: '1' },
+          bar: { type: 'string' }
+        }
+      }
+      Eson::API::DSL::UrlBuilder.new(args)
     end
 
     it 'does not raise error' do
@@ -179,13 +170,14 @@ describe Eson::API::DSL::UrlBuilder do
   describe '#source_values' do
     subject { builder.source_values }
     let(:builder) do
-      Eson::API::DSL::UrlBuilder.new do
-        params do
-          string :foo, 'test'
-          string :bar, 'no'
-        end
-        source_param :foo
-      end
+      args = {
+        params: {
+          foo: { type: 'string', default: 'test' },
+          bar: { type: 'string', default: 'no' },
+        },
+        source_params: ['foo']
+      }
+      Eson::API::DSL::UrlBuilder.new(args)
     end
 
     it 'does not raise error' do

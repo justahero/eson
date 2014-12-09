@@ -4,20 +4,19 @@ module Eson
   module API
     module DSL
       class PartBuilder
-        def initialize
+        include Virtus.model
+
+        def initialize(args = {})
+          super
+          @mod = create_module
           @required_parts ||= {}
+          args.each { |k, v| add_part(k, v) }
         end
 
         def add_part(path, args = {})
           name = path.to_sym
           type = args.fetch(:type)
 
-          @mod ||= begin
-                     m = Module.new do
-                       include Virtus.module
-                     end
-                     self.extend m
-                   end
           @mod.instance_eval do
             attribute name, type
           end
@@ -44,6 +43,15 @@ module Eson
           else
             false
           end
+        end
+
+        private
+
+        def create_module
+          m = Module.new do
+            include Virtus.module
+          end
+          self.extend m
         end
       end
     end

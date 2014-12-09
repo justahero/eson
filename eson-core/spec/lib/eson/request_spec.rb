@@ -45,7 +45,7 @@ describe Eson::Request do
 
     describe 'comparing requests' do
       it 'creates different url objects' do
-        expect(request1.url.object_id).to_not eq(request1.url.object_id)
+        expect(request1.url.object_id).to_not eq(request2.url.object_id)
       end
     end
   end

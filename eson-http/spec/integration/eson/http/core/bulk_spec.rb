@@ -16,7 +16,7 @@ describe 'Eson::HTTP::Core::Bulk' do
 
   context 'with block' do
     describe 'indexing documents' do
-      let(:total) { 2 }
+      let(:total) { 5 }
       subject(:response) do
         es_client.bulk(refresh: true) do |request|
           1.upto(total) do |i|
@@ -34,7 +34,7 @@ describe 'Eson::HTTP::Core::Bulk' do
     end
 
     describe 'deleting documents' do
-      let(:total) { 2 }
+      let(:total) { 4 }
       before do
         es_client.bulk(refresh: true) do |request|
           1.upto(total) do |i|
@@ -43,8 +43,10 @@ describe 'Eson::HTTP::Core::Bulk' do
         end
       end
       subject(:response) do
-        1.upto(total - 1) do |i|
-          request.delete index: 'test', type: 'bar', id: "#{i}"
+        es_client.bulk(refresh: true) do |request|
+          1.upto(total - 1) do |i|
+            request.delete index: 'test', type: 'bar', id: "#{i}"
+          end
         end
       end
 
@@ -52,7 +54,7 @@ describe 'Eson::HTTP::Core::Bulk' do
 
       it 'returns correct number of documents' do
         subject
-        expect(count).to eq(total - 1)
+        expect(count).to eq 1
       end
     end
   end

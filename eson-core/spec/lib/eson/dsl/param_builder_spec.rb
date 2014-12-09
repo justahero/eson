@@ -46,9 +46,8 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add enum parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          enum :foo, ['1', '2'], '1'
-        end
+        args = { foo: { type: 'enum', values: ['1', '2'], default: '1' } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :foo, '1'
@@ -68,19 +67,17 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add string parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          string :bar, 'haha'
-        end
+        args = { bar: { type: 'string', default: 'haha' } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :bar, 'haha'
     end
 
-    describe 'add boolean paramter' do
+    describe 'add boolean parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          boolean :foo, false
-        end
+        args = { foo: { type: 'boolean', default: false } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :foo, false
@@ -88,9 +85,8 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add number parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          number :level, 123
-        end
+        args = { level: { type: 'number', default: 123 } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :level, 123
@@ -98,9 +94,8 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add time parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          time :created_at, DateTime.new(2014, 10, 12)
-        end
+        args = { created_at: { type: 'time', default: DateTime.new(2014, 10, 12) } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :created_at, DateTime.new(2014, 10, 12).to_s
@@ -108,9 +103,8 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add list parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          list :h, ['name', 'email']
-        end
+        args = { h: { type: 'list', default: ['name', 'email'] } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :h, ['name', 'email'], []
@@ -118,9 +112,8 @@ describe Eson::API::DSL::ParamBuilder do
 
     describe 'add text parameter' do
       subject do
-        Eson::API::DSL::ParamBuilder.new do
-          text :suggest_text, 'TEXT'
-        end
+        args = { suggest_text: { type: 'text', default: 'TEXT' } }
+        Eson::API::DSL::ParamBuilder.new(args)
       end
 
       it_behaves_like 'a valid parameter', :suggest_text, 'TEXT'

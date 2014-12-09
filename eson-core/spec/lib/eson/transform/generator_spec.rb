@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+require 'eson/dsl'
 require 'lib/eson/transform/generator'
 
 describe Eson::Transform::Generator do
@@ -67,7 +68,9 @@ describe Eson::Transform::Generator do
       subject(:api) do
         eval(source)
         class ApiTest
-          include Eson::Shared::Indices::Refresh
+          def initialize
+            extend Eson::Shared::Indices::Refresh
+          end
         end
         ApiTest.new
       end
@@ -106,7 +109,9 @@ describe Eson::Transform::Generator do
       subject(:api) do
         eval(source)
         class ApiTest
-          include Eson::Shared::Indices::Refresh
+          def initialize
+            extend Eson::Shared::Cluster::Health
+          end
         end
         ApiTest.new
       end
@@ -117,21 +122,25 @@ describe Eson::Transform::Generator do
     end
 
     context 'with sample "cluster.health"' do
-      let(:sample) { load_api_sample('cluster.health') }
-      let(:source) { Eson::Transform::Generator.new(sample).description }
-      let!(:module) { eval(source) }
+      before(:all) do
+        sample = load_api_sample('cluster.health')
+        source = Eson::Transform::Generator.new(sample).description
+        eval(source)
+        class ApiTest
+          def initialize
+            extend Eson::Shared::Cluster::Health
+          end
+        end
+      end
 
-      it 'creates module Eson::Shared::Cluster::Health' do
-        exists = Object.const_defined?('Eson::Shared::Cluster::Health')
-        expect(exists).to eq true
+      context 'loading class' do
+        it 'creates module Eson::Shared::Cluster::Health' do
+          exists = Object.const_defined?('Eson::Shared::Cluster::Health')
+          expect(exists).to eq true
+        end
       end
 
       context 'with concrete class' do
-        before do
-          class ApiTest
-            include Eson::Shared::Cluster::Health
-          end
-        end
         subject(:api) { ApiTest.new }
 
         it 'does not increase paths array' do
@@ -168,7 +177,9 @@ describe Eson::Transform::Generator do
     context 'with sample "bulk.json"' do
       let(:sample) { load_api_sample('bulk') }
       let(:source) { Eson::Transform::Generator.new(sample).description }
-      let!(:module) { eval(source) }
+      before do
+        eval(source)
+      end
 
       it 'creates module Eson::Shared::Core::Bulk' do
         exists = Object.const_defined?('Eson::Shared::Core::Bulk')
@@ -184,10 +195,9 @@ describe Eson::Transform::Generator do
     context 'with sample "indices.exists_alias"' do
       let(:sample) { load_api_sample('indices.exists_alias') }
       let(:source) { Eson::Transform::Generator.new(sample).description }
-      subject { eval(source) }
 
       it 'does not raise error' do
-        expect { subject }.to_not raise_error
+        expect { eval(source) }.to_not raise_error
       end
     end
   end

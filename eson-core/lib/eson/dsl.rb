@@ -1,4 +1,5 @@
 require 'eson/dsl/url_builder'
+require 'eson/dsl/url_hash'
 
 module Eson
   module API
@@ -9,7 +10,7 @@ module Eson
         end
 
         def builder
-          @builder
+          @builder ||= UrlHash.new
         end
 
         def request_methods(*list)
@@ -17,15 +18,25 @@ module Eson
             list.map { |e| e.to_sym }
           end
         end
+
+        def included(base)
+          b = builder
+          base.send(:define_method, :url) do
+            @url ||= UrlBuilder.new(b.to_hash.freeze)
+          end
+        end
+
+        def extended(base)
+          b = builder
+          base.send(:define_singleton_method, :url) do
+            @url ||= UrlBuilder.new(b.to_hash.freeze)
+          end
+        end
       end
 
       def self.included(base)
+        base.instance_variable_set(:@url, Hash.new)
         base.extend(ClassMethods)
-        builder = UrlBuilder.new
-        base.instance_variable_set(:@builder, builder)
-        base.send(:define_method, :url) do
-          builder
-        end
       end
     end
   end

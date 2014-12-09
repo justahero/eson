@@ -4,12 +4,18 @@ require 'eson/dsl'
 
 describe 'Eson::Api::DSL' do
   before do
-    C = Class.new do
+    M = Module.new do
       include Eson::API::DSL
+    end
+    C = Class.new do
+      def initialize
+        self.extend M
+      end
     end
   end
 
   after do
+    Object.send(:remove_const, :M)
     Object.send(:remove_const, :C)
   end
 
@@ -18,7 +24,7 @@ describe 'Eson::Api::DSL' do
   describe '#request_methods' do
     context 'with single method' do
       before do
-        C.class_eval do
+        M.class_eval do
           request_methods :get
         end
       end
@@ -30,7 +36,7 @@ describe 'Eson::Api::DSL' do
 
     context 'with multiple methods' do
       before do
-        C.class_eval do
+        M.class_eval do
           request_methods :post, :get
         end
       end
@@ -44,7 +50,7 @@ describe 'Eson::Api::DSL' do
   describe '#url' do
     context 'with empty block' do
       before do
-        C.class_eval do
+        M.class_eval do
           url {}
         end
       end
@@ -58,7 +64,7 @@ describe 'Eson::Api::DSL' do
 
     context 'with reopening url again' do
       before do
-        C.class_eval do
+        M.class_eval do
           url do
             params do
               string :foo
@@ -79,7 +85,7 @@ describe 'Eson::Api::DSL' do
 
     describe 'sets base_path' do
       subject do
-        C.class_eval do
+        M.class_eval do
           url do
             set_base_path 'test'
           end
@@ -100,7 +106,7 @@ describe 'Eson::Api::DSL' do
 
     describe 'sets path' do
       subject do
-        C.class_eval do
+        M.class_eval do
           url do
             set_base_path 'test'
             path '/_cluster/health'
@@ -135,7 +141,7 @@ describe 'Eson::Api::DSL' do
 
     describe '#params' do
       subject do
-        C.class_eval do
+        M.class_eval do
           url do
             set_base_path 'foo'
             params do
@@ -152,7 +158,7 @@ describe 'Eson::Api::DSL' do
 
     describe '#source_param' do
       subject do
-        C.class_eval do
+        M.class_eval do
           url do
             source_param :foo, :bar
           end
@@ -161,7 +167,7 @@ describe 'Eson::Api::DSL' do
       end
 
       it 'returns list of source parameters' do
-        expect(subject.url.source_params).to eq [:foo, :bar]
+        expect(subject.url.source_params).to eq ['foo', 'bar']
       end
     end
   end

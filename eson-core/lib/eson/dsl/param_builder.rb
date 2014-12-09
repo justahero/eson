@@ -4,12 +4,39 @@ module Eson
   module API
     module DSL
       class ParamBuilder
-        def initialize(&block)
+        include Virtus.model
+
+        TYPE_MAP = {
+          'string'   => String,
+          'text'     => String,
+          'boolean'  => Boolean,
+          'number'   => Fixnum,
+          'duration' => Integer,
+          'list'     => Array[String],
+          'time'     => String,
+          'enum'     => String
+        }
+
+        def initialize(args = {})
+          super
           @mod = create_module
-          instance_eval(&block) if block_given?
+          add_params(args)
         end
 
-        def enum(name, enum_values = [], default = nil)
+        def add_params(args = {})
+          args.each do |k, v|
+            type = v.fetch(:type)
+            if type == 'enum'
+              enum(k, v)
+            else
+              send("#{type}", k, v[:default])
+            end
+          end
+        end
+
+        def enum(name, args = {})
+          enum_values = args.fetch(:values)
+          default = args.fetch(:default, nil)
           coercer = proc { |value|
             values = Array(value)
             unless values.all?{ |v| enum_values.include?(v) } || value.nil?
