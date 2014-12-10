@@ -18,7 +18,6 @@ module Eson
         }
 
         def initialize(args = {})
-          super
           @mod = create_module
           add_params(args)
         end
@@ -26,51 +25,29 @@ module Eson
         def add_params(args = {})
           args.each do |k, v|
             type = v.fetch(:type)
-            if type == 'enum'
-              enum(k, v)
-            else
-              send("#{type}", k, v[:default])
-            end
+            send("#{type}", k, TYPE_MAP[type.to_s], v)
           end
         end
 
-        def enum(name, args = {})
+        [:string, :list, :boolean, :number, :duration, :time].each do |method_name|
+          define_method method_name.to_sym do |name, type, args = {}|
+            add_attribute name, type, args
+          end
+        end
+
+        alias :text :string
+
+        def enum(name, type, args = {})
           enum_values = args.fetch(:values)
           default = args.fetch(:default, nil)
           coercer = proc { |value|
             values = Array(value)
             unless values.all?{ |v| enum_values.include?(v) } || value.nil?
-              raise ArgumentError
+              raise ArgumentError, "Enum value #{value} not allowed"
             end
             value
           }
-          add_attribute name, String, default, coercer
-        end
-
-        def string(name, default = nil)
-          add_attribute name, String, default
-        end
-
-        alias :text :string
-
-        def list(name, default = nil)
-          add_attribute name, Array[String], default
-        end
-
-        def boolean(name, default = nil)
-          add_attribute name, 'Boolean', default
-        end
-
-        def number(name, default = nil)
-          add_attribute name, Fixnum, default
-        end
-
-        def duration(name, default = nil)
-          add_attribute name, Integer, default
-        end
-
-        def time(name, default = nil)
-          add_attribute name, String, default
+          add_attribute name, type, { default: default, coercer: coercer }
         end
 
         private
@@ -82,13 +59,11 @@ module Eson
           self.extend m
         end
 
-        def add_attribute(name, type, default = nil, coercer = nil)
-          args = {}
-          args[:coercer] = coercer if coercer
+        def add_attribute(name, type, args = {})
           @mod.instance_eval do
             attribute name.to_sym, type, args
           end
-          send("#{name}=", default)
+          send("#{name}=", args[:default]) unless args[:default].nil?
         end
       end
     end
